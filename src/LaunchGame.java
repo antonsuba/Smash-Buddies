@@ -15,13 +15,14 @@ public class LaunchGame extends Canvas implements Runnable{
     static CharacterSelect characterSelect;
     static MapSelect mapSelect;
     static GamePlay gamePlay;
+    static WaitingScreen waitingScreen;
 
     static GameClient gameClient;
     static GameServer gameServer;
 
     private Thread gameThread;
 
-    static enum STATE{MENU,CHARSEL, MAPSEL, GAME, WIN, CREDITS};
+    static enum STATE{MENU,CHARSEL, MAPSEL, GAME, WAIT, WIN, CREDITS};
     static STATE State = STATE.MENU;
 
     int xResolution;
@@ -55,6 +56,7 @@ public class LaunchGame extends Canvas implements Runnable{
         characterSelect = new CharacterSelect(xBorder,yBorder,scaling);
         mapSelect = new MapSelect(xBorder,yBorder,scaling);
         gamePlay = new GamePlay(xBorder,yBorder,scaling);
+        waitingScreen = new WaitingScreen(xBorder,yBorder,scaling);
 
         addMouseMotionListener(new MouseMotionHandler());
         addMouseListener(new MoueEventHandler(xBorder,yBorder,scaling));
@@ -153,6 +155,9 @@ public class LaunchGame extends Canvas implements Runnable{
                 ControllerEvent();
             }
         }
+        else if(State == STATE.WAIT){
+            waitingScreen.animate();
+        }
     }
 
     //Rendering Graphics
@@ -168,6 +173,9 @@ public class LaunchGame extends Canvas implements Runnable{
         }
         else if(State == STATE.GAME){
             gamePlay.draw(g);
+        }
+        else if(State == STATE.WAIT){
+            waitingScreen.draw(g);
         }
         else if(State == STATE.WIN){
             g.setColor(Color.BLACK);
@@ -206,11 +214,13 @@ public class LaunchGame extends Canvas implements Runnable{
     public static void startServer(){
         gameServer = new GameServer();
         gameServer.start();
+        serverRunning = true;
     }
 
     public static void startClient(){
         gameClient = new GameClient();
         gameClient.start();
+        clientRunning = true;
     }
     //Networking
 
@@ -268,12 +278,19 @@ public class LaunchGame extends Canvas implements Runnable{
         int rightTrigger = controller.getZRotationPercentage();
         int leftTrigger = controller.getZAxisPercentage();
 
+        int xRightStick = controller.getX_RightJoystick_Percentage();
+        int yRightStick = controller.getY_RightJoystick_Percentage();
+
         if(xValuePercentageLeftJoystick > 60){
             LaunchGame.gamePlay.currentChar.movingRight = true;
             LaunchGame.gamePlay.currentChar.movingLeft = false;
+            LaunchGame.gamePlay.currentChar.facingLeft = false;
+            LaunchGame.gamePlay.currentChar.facingRight = true;
         } else if(xValuePercentageLeftJoystick < 35){
             LaunchGame.gamePlay.currentChar.movingRight = false;
             LaunchGame.gamePlay.currentChar.movingLeft = true;
+            LaunchGame.gamePlay.currentChar.facingLeft = true;
+            LaunchGame.gamePlay.currentChar.facingRight = false;
         } else{
             LaunchGame.gamePlay.currentChar.movingRight = false;
             LaunchGame.gamePlay.currentChar.movingLeft = false;
@@ -281,21 +298,54 @@ public class LaunchGame extends Canvas implements Runnable{
 
         if(yValuePercentageLeftJoystick < 20){
             LaunchGame.gamePlay.currentChar.jumping = true;
+            if(LaunchGame.gamePlay.currentChar.canJump){
+                LaunchGame.gamePlay.currentChar.soundClip("Jump");
+            }
         }
 
+        int xPos = (xBorder + LaunchGame.gamePlay.currentChar.xPos) * scaling;
+        int yPos = (yBorder + LaunchGame.gamePlay.currentChar.yPos) * scaling;
+        int width = LaunchGame.gamePlay.currentChar.width * scaling;
+        int height = LaunchGame.gamePlay.currentChar.height * scaling;
+
         if(rightTrigger > 60){
-            LaunchGame.gamePlay.currentChar.fireBullet(0, 0);
+            //up-right
+            if(xRightStick > 80 && yRightStick < 30){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos + width, yPos - 40);
+            }
+            //straight right
+            else if(xRightStick > 80 && yRightStick > 30 && yRightStick < 70){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos + width, yPos - 20);
+            }
+            //down-right
+            else if(xRightStick > 80 && yRightStick > 70){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos + width, yPos);
+            }
+            //straight down
+            else if(xRightStick > 30 && xRightStick < 70 && yRightStick > 80){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos + 20, yPos + height);
+            }
+            //down left
+            else if(xRightStick < 30 && yRightStick > 80){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos - 10, yPos);
+            }
+            //straight left
+            else if(xRightStick < 30 && yRightStick > 30 && yRightStick < 70){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos - 10, yPos - 20);
+            }
+            //up-left
+            else if(xRightStick < 30 && yRightStick < 30){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos - 10, yPos - 40);
+            }
+            //straight-up
+            else if(xRightStick > 30 && xRightStick < 70 && yRightStick < 30){
+                LaunchGame.gamePlay.currentChar.fireBullet(xPos + 20, yPos - 40);
+            }
+            //LaunchGame.gamePlay.currentChar.fireBullet(0, 0);
         }
 
         if(leftTrigger > 60){
             LaunchGame.gamePlay.currentChar.specialSkill(0, 0);
         }
-
-        //for(int i = 0; i < controller.getButtonsValues().size(); i++) {
-        //    boolean joystickButton = controller.getButtonValue(i);
-        //    if (joystickButton) {
-        //       System.out.println(i);
-        //   }
-        //}
     }
 }

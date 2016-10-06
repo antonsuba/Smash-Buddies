@@ -80,7 +80,6 @@ public class ViewCharacter {
     public void changeChar(String charName, String activeSkill){
         this.charName = charName;
         this.activeSkill = activeSkill;
-        this.passiveSkill = passiveSkill;
 
         String location = "resources/Sprites/" + charName + ".png";
         try {

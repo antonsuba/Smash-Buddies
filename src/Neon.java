@@ -58,6 +58,8 @@ public class Neon extends Map{
 
     int xBorder, yBorder, scale;
 
+    String mapID = "Neon";
+
     public Neon(int xB, int yB, int sc){
         xBorder = xB;
         yBorder = yB;
@@ -214,5 +216,10 @@ public class Neon extends Map{
         for (NeonBlock a : blocks) {
             a.animate();
         }
+    }
+
+    @Override
+    public String getMapID() {
+        return mapID;
     }
 }

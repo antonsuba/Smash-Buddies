@@ -1,4 +1,7 @@
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +17,7 @@ public class NeonBlock {
     int y;
     int w;
     int h;
+    String Color;
     String blockType;
 
     BufferedImage image;
@@ -24,12 +28,15 @@ public class NeonBlock {
 
     ArrayList<BufferedImage> colors = new ArrayList<BufferedImage>();
     int colorFrame = 0;
+    boolean hit = false;
+    int frames = 0;
 
     public NeonBlock(int x, int y, int w, int h, String Color, String blockType){
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
+        this.Color = Color;
         this.blockType = blockType;
 
         try {
@@ -37,32 +44,32 @@ public class NeonBlock {
             if (Color.equals("Green")) {
                 image2 = ImageIO.read(new File("resources/Objects/Neon/Magenta" + blockType + ".png"));
                 image3 = ImageIO.read(new File("resources/Objects/Neon/Cyan" + blockType + ".png"));
-                image4 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
+                image4 = ImageIO.read(new File("resources/Objects/Neon/Yellow" + blockType + ".png"));
                 image5 = ImageIO.read(new File("resources/Objects/Neon/Orange" + blockType + ".png"));
 
             } else if (Color.equals("Orange")) {
-                image2 = ImageIO.read(new File("resources/Objects/Neon/Magenta" + blockType + ".png"));
-                image3 = ImageIO.read(new File("resources/Objects/Neon/Cyan" + blockType + ".png"));
-                image4 = ImageIO.read(new File("resources/Objects/Neon/Yellow" + blockType + ".png"));
-                image5 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
+                image2 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
+                image3 = ImageIO.read(new File("resources/Objects/Neon/Yellow" + blockType + ".png"));
+                image4 = ImageIO.read(new File("resources/Objects/Neon/Cyan" + blockType + ".png"));
+                image5 = ImageIO.read(new File("resources/Objects/Neon/Magenta" + blockType + ".png"));
 
             } else if (Color.equals("Yellow")) {
-                image2 = ImageIO.read(new File("resources/Objects/Neon/Magenta" + blockType + ".png"));
-                image3 = ImageIO.read(new File("resources/Objects/Neon/Cyan" + blockType + ".png"));
+                image2 = ImageIO.read(new File("resources/Objects/Neon/Cyan" + blockType + ".png"));
+                image3 = ImageIO.read(new File("resources/Objects/Neon/Magenta" + blockType + ".png"));
                 image4 = ImageIO.read(new File("resources/Objects/Neon/Orange" + blockType + ".png"));
                 image5 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
 
             } else if (Color.equals("Cyan")) {
-                image2 = ImageIO.read(new File("resources/Objects/Neon/Magenta" + blockType + ".png"));
-                image3 = ImageIO.read(new File("resources/Objects/Neon/Yellow" + blockType + ".png"));
-                image4 = ImageIO.read(new File("resources/Objects/Neon/Orange" + blockType + ".png"));
-                image5 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
+                image2 = ImageIO.read(new File("resources/Objects/Neon/Orange" + blockType + ".png"));
+                image3 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
+                image4 = ImageIO.read(new File("resources/Objects/Neon/Magenta" + blockType + ".png"));
+                image5 = ImageIO.read(new File("resources/Objects/Neon/Yellow" + blockType + ".png"));
 
             } else if (Color.equals("Magenta")) {
-                image2 = ImageIO.read(new File("resources/Objects/Neon/Cyan" + blockType + ".png"));
-                image3 = ImageIO.read(new File("resources/Objects/Neon/Yellow" + blockType + ".png"));
-                image4 = ImageIO.read(new File("resources/Objects/Neon/Orange" + blockType + ".png"));
-                image5 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
+                image2 = ImageIO.read(new File("resources/Objects/Neon/Yellow" + blockType + ".png"));
+                image3 = ImageIO.read(new File("resources/Objects/Neon/Orange" + blockType + ".png"));
+                image4 = ImageIO.read(new File("resources/Objects/Neon/Green" + blockType + ".png"));
+                image5 = ImageIO.read(new File("resources/Objects/Neon/Cyan" + blockType + ".png"));
 
             }
         } catch (IOException ex) {
@@ -164,11 +171,145 @@ public class NeonBlock {
 
     public void animate(){
         if(Collision(LaunchGame.gamePlay.currentChar, this)){
-            colorFrame++;
-            {
-                if(colorFrame == colors.size()){
+            hit = true;
+        } else{
+            hit = false;
+            frames = 0;
+        }
+        if(hit){
+            frames++;
+            if(frames < 2){
+                hitSound();
+                colorFrame++;
+
+                if(colorFrame >= colors.size()){
                     colorFrame = 0;
                 }
+            }
+        }
+
+    }
+
+    public void hitSound(){
+        AudioInputStream greenStream;
+        Clip green = null;
+        AudioInputStream magentaStream;
+        Clip magenta = null;
+        AudioInputStream orangeStream;
+        Clip orange = null;
+        AudioInputStream cyanStream;
+        Clip cyan = null;
+        AudioInputStream yellowStream;
+        Clip yellow = null;
+
+        try{
+            greenStream = AudioSystem.getAudioInputStream(new File("resources/Sound Clips/Dubstep1.wav"));
+            green = AudioSystem.getClip();
+            green.open(greenStream);
+
+            magentaStream = AudioSystem.getAudioInputStream(new File("resources/Sound Clips/Dubstep2.wav"));
+            magenta = AudioSystem.getClip();
+            magenta.open(magentaStream);
+
+            orangeStream = AudioSystem.getAudioInputStream(new File("resources/Sound Clips/Dubstep6.wav"));
+            orange = AudioSystem.getClip();
+            orange.open(orangeStream);
+
+            cyanStream = AudioSystem.getAudioInputStream(new File("resources/Sound Clips/Dubstep4.wav"));
+            cyan = AudioSystem.getClip();
+            cyan.open(cyanStream);
+
+            yellowStream = AudioSystem.getAudioInputStream(new File("resources/Sound Clips/Dubstep5.wav"));
+            yellow = AudioSystem.getClip();
+            yellow.open(yellowStream);
+
+        } catch(Exception e){
+            System.out.println("dubstep sound error");
+        }
+        if (Color.equals("Green")) {
+            if (colorFrame == 0) {
+                assert green != null;
+                green.start();
+            } else if (colorFrame == 1) {
+                assert magenta != null;
+                magenta.start();
+            } else if (colorFrame == 2) {
+                assert cyan != null;
+                cyan.start();
+            } else if (colorFrame == 3) {
+                assert yellow != null;
+                yellow.start();
+            } else if (colorFrame == 4) {
+                assert orange != null;
+                orange.start();
+            }
+        } else if (Color.equals("Orange")) {
+            if (colorFrame == 0) {
+                assert orange != null;
+                orange.start();
+            } else if (colorFrame == 1) {
+                assert green != null;
+                green.start();
+            } else if (colorFrame == 2) {
+                assert yellow != null;
+                yellow.start();
+            } else if (colorFrame == 3) {
+                assert cyan != null;
+                cyan.start();
+            } else if (colorFrame == 4) {
+                assert magenta != null;
+                magenta.start();
+            }
+        } else if (Color.equals("Yellow")) {
+            if (colorFrame == 0) {
+                assert yellow != null;
+                yellow.start();
+            } else if (colorFrame == 1) {
+                assert cyan != null;
+                cyan.start();
+            } else if (colorFrame == 2) {
+                assert magenta != null;
+                magenta.start();
+            } else if (colorFrame == 3) {
+                assert orange != null;
+                orange.start();
+            } else if (colorFrame == 4) {
+                assert green != null;
+                green.start();
+            }
+        } else if (Color.equals("Cyan")) {
+            if (colorFrame == 0) {
+                assert cyan != null;
+                cyan.start();
+            } else if (colorFrame == 1) {
+                assert orange != null;
+                orange.start();
+            } else if (colorFrame == 2) {
+                assert green != null;
+                green.start();
+            } else if (colorFrame == 3) {
+                assert magenta != null;
+                magenta.start();
+            } else if (colorFrame == 4) {
+                assert yellow != null;
+                yellow.start();
+            }
+        } else if (Color.equals("Magenta")) {
+            if (colorFrame == 0) {
+                assert magenta != null;
+                magenta.start();
+            } else if (colorFrame == 1) {
+                assert yellow != null;
+                yellow.start();
+            } else if (colorFrame == 2) {
+                assert orange != null;
+                orange.start();
+            } else if (colorFrame == 3) {
+                assert green != null;
+                green.start();
+            } else if (colorFrame == 4) {
+                assert cyan != null;
+                cyan.start();
             }
         }
     }

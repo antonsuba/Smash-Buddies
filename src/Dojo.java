@@ -36,6 +36,8 @@ public class Dojo extends Map{
     Rectangle block16;
     Rectangle block17;
 
+    String mapID = "Dojo";
+
     public Dojo(int xB, int yB, int sc){
         xBorder = xB;
         yBorder = yB;
@@ -179,6 +181,11 @@ public class Dojo extends Map{
 
     public void animate(){
         //Do nothing
+    }
+
+    @Override
+    public String getMapID() {
+        return mapID;
     }
 
 }

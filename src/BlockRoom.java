@@ -105,6 +105,8 @@ public class BlockRoom extends Map{
 
     int xBorder, yBorder, scale;
 
+    String mapID = "BlockRoom";
+
     public BlockRoom(int xB, int yB, int sc){
         xBorder = xB;
         yBorder = yB;
@@ -476,5 +478,10 @@ public class BlockRoom extends Map{
     @Override
     public void animate() {
         //do nothing
+    }
+
+    @Override
+    public String getMapID() {
+        return mapID;
     }
 }

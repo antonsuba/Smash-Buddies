@@ -17,11 +17,13 @@ abstract class Character {
     BufferedImage charImgRight;
     BufferedImage specialSkillLeft;
     BufferedImage specialSkillRight;
+    BufferedImage icon;
 
     String charLocationLeft = "";
     String charLocationRight = "";
     String specialLocationLeft = "";
     String specialLocationRight = "";
+    String iconLocation = "";
     String id;
     String playerName = "";
     String enemyName = "";
@@ -31,8 +33,8 @@ abstract class Character {
     int xVelocity = 0;
     int yVelocity = 0;
     final int xSpeed = 1;
-    final int maxXVelocity = 15;
-    final int maxYVelocity = 22;
+    int maxXVelocity = 15;
+    int maxYVelocity = 22;
     final int gravity = 1;
 
     boolean facingLeft = false;
@@ -71,6 +73,11 @@ abstract class Character {
 
     boolean hasMoved = false;
     boolean canMove = true;
+    boolean paralysis = false;
+
+    //Exclusive for Ariel
+    boolean enemyParalyze = false;
+    int paralysisCounter;
 
     public Character(int x, int y, int sc, int xP, int yP, int w, int h){
         xBorder = x;
@@ -103,6 +110,7 @@ abstract class Character {
             charImgRight = ImageIO.read(new File(charLocationRight));
             specialSkillLeft = ImageIO.read(new File(specialLocationLeft));
             specialSkillRight = ImageIO.read(new File(specialLocationRight));
+            icon = ImageIO.read(new File(iconLocation));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,6 +145,8 @@ abstract class Character {
                 g.drawImage(charImgRight, xPos, yPos, width, height, null);
             }
         }
+
+        //Player Name
         g.setFont(new Font("Seravek",Font.PLAIN, 20));
         g.setColor(Color.BLACK);
         if(isAnEnemy){
@@ -149,6 +159,7 @@ abstract class Character {
             int start = width / 2 - stringLen / 2;
             g.drawString(playerName, start + xPos, yPos - 10);
         }
+        //Player Name
     }
 
     public void animate() {
@@ -159,6 +170,9 @@ abstract class Character {
                 tempImmunityCounter = 0;
             }
         }
+
+        //Paralysis
+        canMove = !paralysis;
 
         //Immunity when hit
         if (immunity) {
@@ -253,12 +267,13 @@ abstract class Character {
                         if(!isAnEnemy) {
                             livesLeft--;
                         }
-                        LaunchGame.gamePlay.bulletList.remove(i);
+                        LaunchGame.gamePlay.bulletList.get(i).playerHit = true;
                         soundClip("PlayerHit");
                     }
                     immunity = true;
                     if(livesLeft == 0){
                         isAlive = false;
+                        canMove = false;
                     }
                 }
             }
@@ -307,7 +322,7 @@ abstract class Character {
 
     //Attack
     public void fireBullet(int x, int y){
-        if(canAttack && !specialActive) {
+        if(canMove && canAttack && !specialActive) {
             xTarget = x;
             yTarget = y;
             bulletFired = true;
@@ -323,9 +338,12 @@ abstract class Character {
     //Attack
 
     //Used to update if this character is the enemy character
-    public void update(int x, int y){
+    public void update(int x, int y, boolean fL, boolean fR){
         xPos = x;
         yPos = y;
+
+        facingLeft = fL;
+        facingRight = fR;
 
         //livesLeft = lives;
     }

@@ -23,6 +23,8 @@ public class GameServer extends Thread{
     boolean rosterReceived = false;
     ArrayList<String> roster;
 
+    int deathAnimationCounter = 0;
+
     public void startServer() {
         System.out.println("Server started");
 
@@ -98,12 +100,26 @@ public class GameServer extends Thread{
                         boolean specialUsed = Boolean.valueOf(dataParts[5]);
                         boolean isAlive = Boolean.valueOf(dataParts[6]);
                         boolean enemyLoss = Boolean.valueOf(dataParts[7]);
-                        //int numLives = Integer.parseInt(dataParts[7]);
+                        boolean facingLeft = Boolean.valueOf(dataParts[8]);
+                        boolean facingRight = Boolean.valueOf(dataParts[9]);
+                        int enemyLives = Integer.parseInt(dataParts[10]);
+                        boolean paralyze = Boolean.valueOf(dataParts[11]);
 
-                        LaunchGame.gamePlay.currentEnemy.update(xPos, yPos);
+                        LaunchGame.gamePlay.currentEnemy.update(xPos, yPos, facingLeft, facingRight);
+                        LaunchGame.gamePlay.enemyLives = enemyLives;
 
                         if(enemyLoss){
-                            LaunchGame.State = LaunchGame.STATE.WIN;
+                            LaunchGame.gamePlay.enemyLoss = true;
+                        }
+
+                        if(!isAlive){
+                            LaunchGame.gamePlay.currentEnemy.isAlive = false;
+                        }
+
+                        LaunchGame.gamePlay.currentChar.paralysis = paralyze;
+
+                        if(paralyze){
+                            LaunchGame.gamePlay.currentChar.canMove = false;
                         }
 
                         if (bulletFired) {
@@ -114,10 +130,6 @@ public class GameServer extends Thread{
                         else if(specialUsed){
                             LaunchGame.gamePlay.currentEnemy.specialSkill(xTarget,yTarget);
                             LaunchGame.gamePlay.currentEnemy.specialUsed = false;
-                        }
-
-                        if(!isAlive){
-                            LaunchGame.gamePlay.currentEnemy.isAlive = false;
                         }
                     }
                 }catch(Exception e){
@@ -141,8 +153,9 @@ public class GameServer extends Thread{
                     String char1 = roster.get(0);
                     String char2 = roster.get(1);
                     String char3 = roster.get(2);
+                    String mapSelected = LaunchGame.gamePlay.currentMap.getMapID();
 
-                    dataToBeSent = "00" + "|" + name + "|" + char1 + "|" + char2 + "|" + char3;
+                    dataToBeSent = "00" + "|" + name + "|" + char1 + "|" + char2 + "|" + char3 + "|" + mapSelected;
 
                     output.println(dataToBeSent);
                     output.flush();
@@ -162,16 +175,34 @@ public class GameServer extends Thread{
                     String specialUsed = Boolean.toString(LaunchGame.gamePlay.currentChar.specialUsed);
                     String isAlive = Boolean.toString(LaunchGame.gamePlay.currentChar.isAlive);
                     String playerLoss = Boolean.toString(LaunchGame.gamePlay.playerLoss);
-                    //String numLives = String.valueOf(LaunchGame.gamePlay.currentChar.livesLeft);
+                    String facingLeft = Boolean.toString(LaunchGame.gamePlay.currentChar.facingLeft);
+                    String facingRight = Boolean.toString(LaunchGame.gamePlay.currentChar.facingRight);
+                    String numLives = String.valueOf(LaunchGame.gamePlay.currentChar.livesLeft);
+                    String paralyze = String.valueOf(LaunchGame.gamePlay.currentChar.enemyParalyze);
 
-                    dataToBeSent = xPos + "|" + yPos + "|" + bulletFired + "|" + xTarget + "|"
-                            + yTarget + "|" + specialUsed + "|" + isAlive + "|" + playerLoss;
+                    if(isAlive.equalsIgnoreCase("false")){
+                        deathAnimationCounter++;
+                        if(deathAnimationCounter > 20){
+                            isAlive = "true";
+                        }
+                    }
+                    else if(isAlive.equalsIgnoreCase("true")) {
+                        deathAnimationCounter = 0;
+                    }
+
+                    dataToBeSent = xPos + "|" + yPos + "|" + bulletFired + "|" + xTarget + "|" + yTarget + "|" + specialUsed
+                            + "|" + isAlive + "|" + playerLoss + "|" + facingLeft + "|" + facingRight + "|" + numLives
+                            + "|" + paralyze;
 
                     output.println(dataToBeSent);
                     output.flush();
 
                     if (LaunchGame.gamePlay.currentChar.bulletFired) {
                         LaunchGame.gamePlay.currentChar.bulletFired = false;
+                    }
+
+                    if (LaunchGame.gamePlay.currentChar.specialUsed) {
+                        LaunchGame.gamePlay.currentChar.specialUsed = false;
                     }
                 }
             }catch (Exception e){

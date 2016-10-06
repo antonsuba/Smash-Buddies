@@ -16,6 +16,8 @@ public class GrayRoom extends Map{
 
     int xBorder, yBorder, scale;
 
+    String mapID = "GrayRoom";
+
     public GrayRoom(int xB, int yB, int sc){
 
         xBorder = xB;
@@ -25,6 +27,13 @@ public class GrayRoom extends Map{
         xBorder = xB;
         yBorder = yB;
         scale = sc;
+
+        //Spawn Points
+        serverSpawnX = (xBorder + 50)*scale;
+        serverSpawnY = (yBorder + 50)*scale;
+        clientSpawnX = (xBorder + 1230)*scale;
+        clientSpawnY = (yBorder + 50)*scale;
+        //Spawn Points
 
         //side walls
         Rectangle block1 = new Rectangle((xBorder)*scale, (yBorder)*scale, 20*scale, 320*scale);
@@ -167,6 +176,11 @@ public class GrayRoom extends Map{
 
     public void animate(){
         //Do nothing
+    }
+
+    @Override
+    public String getMapID() {
+        return mapID;
     }
 
 

@@ -20,11 +20,15 @@ public class Goku extends Character{
         this.charLocationLeft = "resources/Sprites/Goku(FaceLeft).png";
         this.specialLocationLeft = "resources/Special Skills/SuperSaiyan(FaceLeft).png";
         this.specialLocationRight = "resources/Special Skills/SuperSaiyan.png";
+        this.iconLocation = "resources/Icons/Character9.png";
+
+        this.id = "Goku";
     }
 
     @Override
     public void specialSkill(int x, int y) {
         if(canUseSpecial){
+            specialUsed = true;
             specialActive = true;
             canUseSpecial = false;
             tempImmunityLimit = 360;
@@ -81,6 +85,8 @@ class Kamehameha extends Bullet{
     public Kamehameha(int xB, int yB, int sc, int xP, int yP, double xT, double yT, int w, int h,String direction) {
         super(xB, yB, sc, xP, yP, xT, yT);
 
+        bulletHitLimit = 100;
+
         width = w;
         height = h;
         this.direction = direction;
@@ -89,7 +95,7 @@ class Kamehameha extends Bullet{
         try{
             kamehameha = ImageIO.read(new File("resources/Special Skills/Kamehameha.png"));
         } catch(IOException e){
-
+            //Do nothing
         }
     }
 

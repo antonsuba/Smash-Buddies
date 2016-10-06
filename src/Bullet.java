@@ -35,6 +35,8 @@ public class Bullet {
 
     int hitCounter;
     boolean bulletHit = false;
+    int bulletHitLimit = 10;
+    boolean playerHit;
 
     public Bullet(int xB, int yB, int sc, int xP, int yP, double xT, double yT){
 
@@ -84,6 +86,10 @@ public class Bullet {
         }
         if(yPos + height <= 0) {
             yPos = (yBorder + 720)*scale;
+        }
+
+        if(playerHit){
+            LaunchGame.gamePlay.bulletList.remove(this);
         }
 
         Collision();

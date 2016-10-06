@@ -272,6 +272,9 @@ public class CharacterSelect{
                     } else if(x == (thumbX + 90*9)*scale){
                         //characterSelected.add("Rambo");
                         LaunchGame.gamePlay.characterList.add(new Rambo(xBorder,yBorder,scale, 100, 100, 45, 80));
+                    } else if(x == (thumbX + 90*10)*scale) {
+                        //characterSelected.add("Mace Windu");
+                        LaunchGame.gamePlay.characterList.add(new MaceWindu(xBorder, yBorder, scale, 100, 100, 50, 80));
                     }
                 }
             } else{
@@ -307,9 +310,9 @@ public class CharacterSelect{
                 } else if(x == (thumbX + 90*8)*scale){
                     //characterSelected.add("Goku");
                     LaunchGame.gamePlay.characterList.add(new Goku(xBorder,yBorder,scale, 100, 100, 60, 100));
-                } else if(x == (thumbX + 90*9)*scale){
-                    //characterSelected.add("Rambo");
-                    LaunchGame.gamePlay.characterList.add(new Rambo(xBorder,yBorder,scale, 100, 100, 45, 80));
+                } else if(x == (thumbX + 90*10)*scale){
+                    //characterSelected.add("Mace Windu");
+                    LaunchGame.gamePlay.characterList.add(new MaceWindu(xBorder,yBorder,scale, 100, 100, 50, 80));
                 }
             }
         } else{
@@ -348,6 +351,9 @@ public class CharacterSelect{
             } else if(x == (thumbX + 90*9)*scale){
                 //characterSelected.add("Rambo");
                 LaunchGame.gamePlay.characterList.add(new Rambo(xBorder,yBorder,scale, 100, 100, 45, 80));
+            } else if(x == (thumbX + 90*10)*scale){
+                //characterSelected.add("Mace Windu");
+                LaunchGame.gamePlay.characterList.add(new MaceWindu(xBorder,yBorder,scale, 100, 100, 50, 80));
             }
         }
 
@@ -407,6 +413,9 @@ public class CharacterSelect{
             } else if(x == (thumbX + 90*9)*scale){
                 //characterSelected.add("Rambo");
                 LaunchGame.gamePlay.characterList.add(new Rambo(xBorder,yBorder,scale, 100, 100, 45, 80));
+            } else if(x == (thumbX + 90*10)*scale){
+                //characterSelected.add("Mace Windu");
+                LaunchGame.gamePlay.characterList.add(new MaceWindu(xBorder,yBorder,scale, 100, 100, 50, 80));
             }
         }
 
@@ -471,6 +480,9 @@ public class CharacterSelect{
             } else if(x == (thumbX + 90*9)*scale){
                 //characterSelected.add("Rambo");
                 LaunchGame.gamePlay.characterList.add(new Rambo(xBorder,yBorder,scale, 100, 100, 45, 80));
+            } else if(x == (thumbX + 90*10)*scale) {
+                //characterSelected.add("Mace Windu");
+                LaunchGame.gamePlay.characterList.add(new MaceWindu(xBorder, yBorder, scale, 100, 100, 50, 80));
             }
         }
 
@@ -544,8 +556,11 @@ public class CharacterSelect{
             viewPanel.changeChar("Rambo", "Machine Gun");
             drawBorder((thumbX + 90*9)*scale, drawBorderY);
             viewPanel.turnLabelVisible();
+        } else if(x >= (thumbX + 90*10)*scale && x <= (thumbXLimit + 90*10)*scale && y >= thumbY && y <= thumbYLimit){
+            viewPanel.changeChar("Mace Windu", "Vaapad");
+            drawBorder((thumbX + 90*10)*scale, drawBorderY);
+            viewPanel.turnLabelVisible();
         } else if(x >= readyX && x <= readyX + readyWidth && y >= readyY && y <= readyY + buttonHeight){
-
             if(sel1Visible && sel2Visible && sel3Visible){
                 readyButton.start();
             }

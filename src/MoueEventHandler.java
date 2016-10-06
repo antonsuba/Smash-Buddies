@@ -89,7 +89,17 @@ public class MoueEventHandler implements MouseListener{
                 && y >= LaunchGame.characterSelect.readyY && y <= LaunchGame.characterSelect.readyY + LaunchGame.characterSelect.buttonHeight){
             if(LaunchGame.characterSelect.sel1Visible && LaunchGame.characterSelect.sel2Visible && LaunchGame.characterSelect.sel3Visible) {
                 addNamesToList(LaunchGame.gamePlay.characterList);
-                LaunchGame.State = LaunchGame.STATE.MAPSEL;
+                if(LaunchGame.serverRunning) {
+                    LaunchGame.State = LaunchGame.STATE.MAPSEL;
+                }
+                else if(LaunchGame.clientRunning){
+                    if(LaunchGame.gameClient.mapLoaded){
+                        LaunchGame.State = LaunchGame.STATE.GAME;
+                    }
+                    else{
+                        LaunchGame.State = LaunchGame.STATE.WAIT;
+                    }
+                }
             }
         }
         else if(x >= LaunchGame.characterSelect.backX && x <= LaunchGame.characterSelect.backX + LaunchGame.characterSelect.backWidth &&
@@ -126,6 +136,9 @@ public class MoueEventHandler implements MouseListener{
         }
         else if(x >= (thumbX + 90*9)*scale && x <= (thumbXLimit + 90*9)*scale && y >= thumbY && y <= thumbYLimit) {
             LaunchGame.characterSelect.selectChar((thumbX + 90*9)*scale, thumbY);
+        }
+        else if(x >= (thumbX + 90*10)*scale && x <= (thumbXLimit + 90*10)*scale && y >= thumbY && y <= thumbYLimit) {
+            LaunchGame.characterSelect.selectChar((thumbX + 90*10)*scale, thumbY);
         }
     }
 

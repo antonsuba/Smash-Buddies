@@ -21,6 +21,7 @@ public class Batman extends Character {
         this.charLocationRight = "resources/Sprites/Batman.png";
         this.specialLocationLeft = "resources/Sprites/Batman(FaceLeft).png";
         this.specialLocationRight = "resources/Sprites/Batman.png";
+        this.iconLocation = "resources/Icons/Character3.png";
 
         this.id = "Batman";
     }
