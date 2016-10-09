@@ -48,7 +48,7 @@ public class CharacterSelect{
 
     int thumbX;
 
-    public CharacterSelect(int xB, int yP, int sc){
+    CharacterSelect(int xB, int yP, int sc){
 
         xBorder = xB;
         yBorder = yP;
