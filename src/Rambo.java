@@ -111,6 +111,6 @@ class machineGunBullet extends Bullet{
 
     @Override
     public void wallHitSound(){
-        //Do nothing, no sound
+        //Do nothing, no sounds
     }
 }
