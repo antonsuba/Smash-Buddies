@@ -26,9 +26,7 @@ public class Batman extends Character {
         this.id = "Batman";
     }
     
-    System.out.println("Azra loves BBC"); 
     System.out.println("#DENNISVILLAMOR2016");
-    System.out.println("ULTIMATELOVER6969");
     @Override
     public void specialSkill(int x, int y) {
         if(canUseSpecial){
